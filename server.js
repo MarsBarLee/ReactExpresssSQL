@@ -66,23 +66,29 @@ app.delete("/employee/:id", (req, res) => {
   );
 });
 
-app.delete("/employee/:id", (req, res) => {
+app.post('/employee', (req, res) => {
+  let emp = req.body;
+  emp.empID= 0;
+  let sql ='SET @EmpID = ?; SET @Name = ?; SET @EmpCode = ?; SET @Salary = ?; \
+  CALL EmployeeAddOrEdit(@EmpID,@Name,@EmpCode,@Salary);';
   mysqlConnection.query(
-    "DELETE FROM employee WHERE EmpID =?",
-    [req.params.id],
+    sql,[emp.EmpID, emp.Name, emp.EmpCode, emp.Salary],
     (err, rows, field) => {
-      if (!err) res.send("FIRED employee!");
+      if (!err) res.send(rows)
       else console.log(err);
     }
   );
 });
 
-// // Routes
-// app.get('/api/students', (req, res) => {
-//   const students = [
-//     { id: 1, firstName: 'Captain', lastName: 'fancy' },
-//     { id: 2, firstName: 'John', lastName: 'buttercup' },
-//     { id: 3, firstName: 'Dusty', lastName: 'Trail' },
-//   ];
-//   res.json(students);
-// });
+app.put('/employee', (req, res) => {
+  let emp = req.body;
+  let sql ='SET @EmpID = ?; SET @Name = ?; SET @EmpCode = ?; SET @Salary = ?; \
+  CALL EmployeeAddOrEdit(@EmpID,@Name,@EmpCode,@Salary);';
+  mysqlConnection.query(
+    sql,[emp.EmpID, emp.Name, emp.EmpCode, emp.Salary],
+    (err, rows, field) => {
+      if (!err) res.send("Updated suceesffully!");
+      else console.log(err);
+    }
+  );
+});
